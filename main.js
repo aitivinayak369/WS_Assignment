@@ -4,7 +4,7 @@ const mongoose = require('mongoose'); //mongoDB ORM
 const app = express();
 const path = require('path'); //for creating absolute path
 const SearchString = require('./models/searchString')  // importing the model searchString.
-const port = process.env.port|3636;
+const port = process.env.PORT||3636;
 mongoose.connect('mongodb://vinayak:vinayak123@ds044787.mlab.com:44787/wisestep').then(()=>{ //connecting to mongoDB
     console.log('Succesfully connected!');
 }).catch((err)=>{
