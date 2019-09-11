@@ -4,8 +4,8 @@ const mongoose = require('mongoose'); //mongoDB ORM
 const app = express();
 const path = require('path'); //for creating absolute path
 const SearchString = require('./models/searchString')  // importing the model searchString.
-
-mongoose.connect('').then(()=>{ //connecting to mongoDB
+const port = process.env.port|3636;
+mongoose.connect('mongodb://vinayak:vinayak123@ds044787.mlab.com:44787/wisestep').then(()=>{ //connecting to mongoDB
     console.log('Succesfully connected!');
 }).catch((err)=>{
     console.log(err);
@@ -62,6 +62,6 @@ app.post('/submit',(req,res)=>{ //if user types 'locations' and presses 'enter' 
 })
 
 
-app.listen(3030,()=>{
-    console.log(`App listening on port: 3030`); // binding to the port
+app.listen(port,()=>{
+    console.log(`App listening on port: ${port}`); // binding to the port
 })
