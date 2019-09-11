@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+</head>
+
+<body>
+    <div class="container" ng-app='myApp' ng-controller="myControl">
+        <div class="row">
+            <!--for displaying "wisestep assignment" with scrolling-->
+            <div class="col-md-4 offset-md-4">
+                <marquee behavior="scroll" direction="left" class="text-success">
+                    <h1>WiseStep Assignment</h1>
+                </marquee>
+            </div>
+        </div>
+        <!--Main row -->
+        <div class="row " style="margin-top: 20%">
+
+            <div class="col-md-4 offset-md-4">
+                <!--this div section contains 'form' element  with textbox for typing locations, and also contains list-group for displaying the suggested kyewords/locations as list-->
+                <form action="#" method="post" ng-submit="submitFun()" onsubmit="return false"> 
+                    <div class="form-group">
+                        <input type="text" placeholder="Enter location.." class="form-control" ng-model="keyword"
+                            ng-keyup="valueChange()">
+                        <ul class="list-group" id="suggList" ng-bind-html="suggListHtml">
+                            <li class="list-group-item p-2" ng-repeat="x in suggestions" id="1"
+                                ng-click="suggClick(x.keyword)" ng-bind="x.keyword"></li>
+
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <hr>
+            <!--contains badges and drop down for displaying multiple locations entered by user-->
+            <div class="col-md-4 offset-md-4" style="visibility:hidden" id="LocationLabels">
+                <span class="badge badge-primary " id="loc1">Hyderabad</span>
+                <span class="badge badge-primary mx-0" id="loc2">Vizag</span>
+                <span class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-bind="nMore">
+                        5 more..
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="#" id="12" ng-repeat=" x in moreLocations" ng-bind="x"></a>
+
+                    </div>
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+</body>
+<script>
+    var app = angular.module('myApp', []); //assing angularApp to variable
+    app.controller('myControl', function ($scope, $http) { //defining the function for controller
+        $scope.suggListHtml = //Firstly,Initializing the 'li element' in 'ul list'
+            "<li class=\"list-group-item p-2 ng-binding ng-scope\" ng-repeat=\"x in suggestions\" id=\"1\" ng-click=\"suggClick(x.keyword)\" ng-bind=\"x.keyword\"></li>";
+        $scope.moreLocations = []; //Initially we no need to display any location suggestions
+        $scope.suggClick = function (val) { //this function will be invoked when the user enters on one of the suggestion listed.
+            //we are getting the 'val' selected by user
+            $scope.keyword = ""; // emptying the textbox 
+           
+            $scope.suggestions = []; //emptying the suggestions array, as we have to remove suggestions.
+
+          //  $scope.suggListHtml =    //newly adding 'li' element in 'ul-element' so that previous  
+           //     "<li class=\"list-group-item p-2 ng-binding ng-scope\" ng-repeat=\"x in suggestions\" id=\"1\" ng-click=\"suggClick(x.keyword)\" ng-bind=\"x.keyword\"></li>";
+           // console.log(val);  used for debugging.
+            var locArray = val.split(" "); //when user clicks the one of the suggestions then multiple locations entered by user is fetched.
+            $scope.nMore = (locArray.length > 1 ? (locArray.length - 2) : (0)) + " more."//updating the dropdwon with new value
+            document.getElementById("loc1").textContent = locArray[0]; //displaying first location in label/badge
+            document.getElementById("loc2").textContent = locArray[1];   //displaying second location in label/badge
+            $scope.moreLocations = locArray.slice(2); //displaing remaining locations in dropdwon
+
+            document.getElementById('LocationLabels').style.visibility = "visible"; //Finally after updation displaying the badges and dropdown
+
+        }
+
+        $scope.submitFun = function () { //when user enters the locations in textbox and clicks the enter button then submit event is invoked
+            //this function handles that event
+            var data = {
+                keyword: angular.copy($scope.keyword) //getting the locations entered by user into the object data.
+            }
+            // console.log($scope.keyword)
+            var locArray = $scope.keyword.split(" "); //getting the multiple locations entered by user
+            $scope.nMore = (locArray.length > 1 ? (locArray.length - 2) : (0)) + " more." //updating the text on dropdown
+            document.getElementById("loc1").textContent = locArray[0]; //updating the first badge or label
+            document.getElementById("loc2").textContent = locArray[1]; //updating the second badge or label
+            $scope.moreLocations = locArray.slice(2); // updating dropdown items
+
+            document.getElementById('LocationLabels').style.visibility = "visible"; //showing on the screen i.e badges/labels and dropdown
+            $http.post('/submit', JSON.stringify(data)).then(function (response) { //for saving the value entered by user we are sending it as post request.
+                console.log(response); //just to check the response
+            }, function (response) {
+                console.log(response.statusText); //checking the status what failure hass coccured
+            });
+        }
+        $scope.valueChange = function () { //This function invoked everytime whenever user types in textbox
+            if ($scope.keyword) { //if user entered the value or checking if there is a value
+                var data = {
+                    keyword: angular.copy($scope.keyword) //getting the value entered 
+                }
+                $http.post('/search', JSON.stringify(data)).then(function (response) {  //sending the value entered as post request, so that in server matching keywords are found and sent as response for suggestion.
+                    console.log(response);
+                    var DataArray = JSON.parse(response.data); //converting response json data to object type data
+                    $scope.suggestions = DataArray; //initilizing the "result array keywords/locations" to "suggestions(ng-repeat array)", so that they are updated.
+                    console.log(response);
+                    //document.getElementById("1").innerHTML= objt.keyword; **not needed**
+                }, function (response) {
+                    console.log(response.statusText); //cosnoling if any error occurs
+                })
+
+            } else { //if user cancelled or emptied the text box
+               
+                $scope.suggestions = [];
+               // $scope.suggListHtml =  **not needed**
+               //     "<li class=\"list-group-item p-2 ng-binding ng-scope\" ng-repeat=\"x in suggestions\" id=\"1\" ng-click=\"suggClick(x.keyword)\" ng-bind=\"x.keyword\"></li>";
+
+            }
+        }
+    })
+</script>
+
+</html>
