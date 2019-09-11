@@ -85,7 +85,7 @@
           //  $scope.suggListHtml =    //newly adding 'li' element in 'ul-element' so that previous  
            //     "<li class=\"list-group-item p-2 ng-binding ng-scope\" ng-repeat=\"x in suggestions\" id=\"1\" ng-click=\"suggClick(x.keyword)\" ng-bind=\"x.keyword\"></li>";
            // console.log(val);  used for debugging.
-            var locArray = val.split(" "); //when user clicks the one of the suggestions then multiple locations entered by user is fetched.
+            var locArray = val.split(","); //when user clicks the one of the suggestions then multiple locations entered by user is fetched.
             $scope.nMore = (locArray.length > 1 ? (locArray.length - 2) : (0)) + " more."//updating the dropdwon with new value
             document.getElementById("loc1").textContent = locArray[0]; //displaying first location in label/badge
             document.getElementById("loc2").textContent = locArray[1];   //displaying second location in label/badge
@@ -101,7 +101,7 @@
                 keyword: angular.copy($scope.keyword) //getting the locations entered by user into the object data.
             }
             // console.log($scope.keyword)
-            var locArray = $scope.keyword.split(" "); //getting the multiple locations entered by user
+            var locArray = $scope.keyword.split(","); //getting the multiple locations entered by user
             $scope.nMore = (locArray.length > 1 ? (locArray.length - 2) : (0)) + " more." //updating the text on dropdown
             document.getElementById("loc1").textContent = locArray[0]; //updating the first badge or label
             document.getElementById("loc2").textContent = locArray[1]; //updating the second badge or label

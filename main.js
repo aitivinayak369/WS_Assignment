@@ -5,7 +5,7 @@ const app = express();
 const path = require('path'); //for creating absolute path
 const SearchString = require('./models/searchString')  // importing the model searchString.
 const port = process.env.PORT||3636;
-mongoose.connect('database url').then(()=>{ //connecting to mongoDB
+mongoose.connect('mongodb+srv://abc:abc!123@cluster0-znaog.mongodb.net/test?retryWrites=true&w=majority').then(()=>{ //connecting to mongoDB
     console.log('Succesfully connected!');
 }).catch((err)=>{
     console.log(err);
@@ -26,7 +26,7 @@ app.post('/search',(req,res)=>{  // Whenever user enters the value in textbox th
 
     if(req.body.keyword)    //checing if the user emptied or entered values in the textbox,  if entered then we  send keywords.
     {
-        SearchString.find({keyword:{$regex: new RegExp(req.body.keyword)}}).limit(5).then((data)=>{ //performing find operation to get the top 5 results that are matched with the value enetered by user.
+        SearchString.find({keyword:{$regex: new RegExp(req.body.keyword,"i")}}).limit(5).then((data)=>{ //performing find operation to get the top 5 results that are matched with the value enetered by user.
        // console.log("+++",data); //for debugging
         res.json(JSON.stringify(data));  //sending the keyword result as json data.
 
