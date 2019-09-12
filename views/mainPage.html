@@ -102,11 +102,15 @@
             }
             // console.log($scope.keyword)
             var locArray = $scope.keyword.split(","); //getting the multiple locations entered by user
-            $scope.nMore = (locArray.length > 1 ? (locArray.length - 2) : (0)) + " more." //updating the text on dropdown
-            document.getElementById("loc1").textContent = locArray[0]; //updating the first badge or label
-            document.getElementById("loc2").textContent = locArray[1]; //updating the second badge or label
-            $scope.moreLocations = locArray.slice(2); // updating dropdown items
-
+            var mArray=[];
+            locArray.forEach(element => {
+               if( element.length>0) mArray.push(element);
+            });
+            $scope.nMore = (mArray.length > 1 ? (mArray.length - 2) : (0)) + " more." //updating the text on dropdown
+            document.getElementById("loc1").textContent = mArray[0]; //updating the first badge or label
+            document.getElementById("loc2").textContent = mArray[1]; //updating the second badge or label
+            $scope.moreLocations = mArray.slice(2); // updating dropdown items
+              data.keyword= mArray.join(",");
             document.getElementById('LocationLabels').style.visibility = "visible"; //showing on the screen i.e badges/labels and dropdown
             $http.post('/submit', JSON.stringify(data)).then(function (response) { //for saving the value entered by user we are sending it as post request.
                 console.log(response); //just to check the response

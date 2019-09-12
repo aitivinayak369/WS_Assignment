@@ -5,7 +5,7 @@ const app = express();
 const path = require('path'); //for creating absolute path
 const SearchString = require('./models/searchString')  // importing the model searchString.
 const port = process.env.PORT||3636;
-mongoose.connect('databse url').then(()=>{ //connecting to mongoDB
+mongoose.connect('mongodb+srv://abc:abc!123@cluster0-znaog.mongodb.net/test?retryWrites=true&w=majority').then(()=>{ //connecting to mongoDB
     console.log('Succesfully connected!');
 }).catch((err)=>{
     console.log(err);
