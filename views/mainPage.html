@@ -50,10 +50,10 @@
 
             <hr>
             <!--contains badges and drop down for displaying multiple locations entered by user-->
-            <div class="col-md-4 offset-md-4" style="visibility:hidden" id="LocationLabels">
-                <span class="badge badge-primary " id="loc1">Hyderabad</span>
-                <span class="badge badge-primary mx-0" id="loc2">Vizag</span>
-                <span class="dropdown">
+            <div class="col-md-4 offset-md-4"  id="LocationLabels">
+                <span class="badge badge-primary " id="loc1" style="visibility:hidden" ng-bind="loc1">Hyderabad</span>
+                <span class="badge badge-primary mx-0" id="loc2" style="visibility:hidden" ng-bind="loc2">Vizag</span>
+                <span class="dropdown" style="visibility:hidden" id="dropDownID">
                     <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" ng-bind="nMore">
                         5 more..
@@ -71,6 +71,7 @@
     </div>
 </body>
 <script>
+    var count=0;
     var app = angular.module('myApp', []); //assing angularApp to variable
     app.controller('myControl', function ($scope, $http) { //defining the function for controller
         $scope.suggListHtml = //Firstly,Initializing the 'li element' in 'ul list'
@@ -82,16 +83,32 @@
            
             $scope.suggestions = []; //emptying the suggestions array, as we have to remove suggestions.
 
-          //  $scope.suggListHtml =    //newly adding 'li' element in 'ul-element' so that previous  
-           //     "<li class=\"list-group-item p-2 ng-binding ng-scope\" ng-repeat=\"x in suggestions\" id=\"1\" ng-click=\"suggClick(x.keyword)\" ng-bind=\"x.keyword\"></li>";
-           // console.log(val);  used for debugging.
-            var locArray = val.split(","); //when user clicks the one of the suggestions then multiple locations entered by user is fetched.
-            $scope.nMore = (locArray.length > 1 ? (locArray.length - 2) : (0)) + " more."//updating the dropdwon with new value
-            document.getElementById("loc1").textContent = locArray[0]; //displaying first location in label/badge
-            document.getElementById("loc2").textContent = locArray[1];   //displaying second location in label/badge
-            $scope.moreLocations = locArray.slice(2); //displaing remaining locations in dropdwon
+         
+            if(count==0)
+            {
+                $scope.loc1 = val;
+                ++count;
+                document.getElementById('loc1').style.visibility = "visible";
+            }
+             else if(count==1&&($scope.loc1!=val))
+             {
+                $scope.loc2 = val; 
+                ++count;
+                document.getElementById('loc2').style.visibility = "visible";
+             } 
+             else if(count>1&&($scope.loc1!=val)&&($scope.loc2!=val)){
+               
+                var check = $scope.moreLocations.indexOf(val);
+                if(check==-1)
+                {
+                $scope.moreLocations.push(val); 
+                ++count;
+                $scope.nMore=(count-2)+" more";
+                }
+                document.getElementById('dropDownID').style.visibility = "visible";
 
-            document.getElementById('LocationLabels').style.visibility = "visible"; //Finally after updation displaying the badges and dropdown
+             }                                       
+              
 
         }
 
@@ -100,18 +117,34 @@
             var data = {
                 keyword: angular.copy($scope.keyword) //getting the locations entered by user into the object data.
             }
-            // console.log($scope.keyword)
-            var locArray = $scope.keyword.split(","); //getting the multiple locations entered by user
-            var mArray=[];
-            locArray.forEach(element => {
-               if( element.length>0) mArray.push(element);
-            });
-            $scope.nMore = (mArray.length > 1 ? (mArray.length - 2) : (0)) + " more." //updating the text on dropdown
-            document.getElementById("loc1").textContent = mArray[0]; //updating the first badge or label
-            document.getElementById("loc2").textContent = mArray[1]; //updating the second badge or label
-            $scope.moreLocations = mArray.slice(2); // updating dropdown items
-              data.keyword= mArray.join(",");
-            document.getElementById('LocationLabels').style.visibility = "visible"; //showing on the screen i.e badges/labels and dropdown
+            
+            if(count==0)
+            {
+                $scope.loc1 = data.keyword;
+                ++count;
+                
+                document.getElementById('loc1').style.visibility = "visible"; 
+            }
+            else if(count==1&&($scope.loc1 != data.keyword))
+            {
+                $scope.loc2 = data.keyword;
+               /// document.getElementById("loc2").textContent = data.keyword;
+               
+                ++count;
+                document.getElementById('loc2').style.visibility = "visible"; 
+            }
+            else if(count>1&&($scope.loc1!=data.keyword)&&($scope.loc2!=data.keyword)){
+                var check = $scope.moreLocations.indexOf(data.keyword);
+                if(check==-1)
+                {
+                $scope.moreLocations.push(data.keyword); 
+                ++count;
+                $scope.nMore=(count-2)+" more";
+                }
+                document.getElementById('dropDownID').style.visibility = "visible"; 
+
+            }
+             
             $http.post('/submit', JSON.stringify(data)).then(function (response) { //for saving the value entered by user we are sending it as post request.
                 console.log(response); //just to check the response
             }, function (response) {
